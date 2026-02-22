@@ -484,6 +484,28 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("agent=work");
   });
 
+  it("makes the first line unique per agentId for prompt caching", () => {
+    const promptMain = buildAgentSystemPrompt({
+      workspaceDir: "/tmp/openclaw",
+      runtimeInfo: { agentId: "main" },
+    });
+    const promptWork = buildAgentSystemPrompt({
+      workspaceDir: "/tmp/openclaw",
+      runtimeInfo: { agentId: "work" },
+    });
+    const promptNone = buildAgentSystemPrompt({
+      workspaceDir: "/tmp/openclaw",
+    });
+
+    expect(promptMain.split("\n")[0]).toBe(
+      "You are main, a personal assistant running inside OpenClaw.",
+    );
+    expect(promptWork.split("\n")[0]).toBe(
+      "You are work, a personal assistant running inside OpenClaw.",
+    );
+    expect(promptNone.split("\n")[0]).toBe("You are a personal assistant running inside OpenClaw.");
+  });
+
   it("includes reasoning visibility hint", () => {
     const prompt = buildAgentSystemPrompt({
       workspaceDir: "/tmp/openclaw",

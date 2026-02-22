@@ -422,13 +422,17 @@ export function buildAgentSystemPrompt(params: {
   });
   const workspaceNotes = (params.workspaceNotes ?? []).map((note) => note.trim()).filter(Boolean);
 
+  const agentId = params.runtimeInfo?.agentId;
+  const identityPrefix = agentId ? `You are ${agentId}, a` : "You are a";
+  const firstLine = `${identityPrefix} personal assistant running inside OpenClaw.`;
+
   // For "none" mode, return just the basic identity line
   if (promptMode === "none") {
-    return "You are a personal assistant running inside OpenClaw.";
+    return firstLine;
   }
 
   const lines = [
-    "You are a personal assistant running inside OpenClaw.",
+    firstLine,
     "",
     "## Tooling",
     "Tool availability (filtered by policy):",
